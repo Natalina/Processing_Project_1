@@ -82,3 +82,94 @@ void mousePressed() {
     }
   }
 }
+
+
+
+class Ball {
+  int xpos;
+  int ypos;
+  color ballColor;
+  float speedx;
+  float speedy;
+  boolean deleted_bool=false; 
+  int boom_loop=0;
+
+  Ball() {
+    xpos=int(random(0, width));
+    ypos=int(random(0, height));
+    speedx=random(3, 7);
+    speedy=random(3, 7);
+    int r=int(random(0, 255));
+    int g=int(random(0, 255));
+    int b=int(random(0, 255));
+    ballColor=color(r, g, b);
+  }
+  void display() {
+    fill(ballColor);
+    ellipse(xpos, ypos, 40, 40);
+  }
+  void move() {
+    if (!deleted_bool) {
+      ypos+=speedy;
+      if (ypos>height || ypos<0) {
+        speedy*=-1;
+      }
+
+      xpos+=speedx;
+      if (xpos>width || xpos<0) {
+        speedx*=-1;
+      }
+      display();
+    }
+    else if (boom_loop<90) {
+      boom();
+    }
+  }
+
+  void boom() {
+    for (int i=0; i<10; i++) {
+      int tx=xpos+int(random(-40, 40));
+      int ty=ypos+int(random(-40, 40));
+      int tx2=tx+int(random(-15, 15));
+      int ty2=ty+int(random(-15, 15));
+      int tx3=tx2+int(random(-15, 15));
+      int ty3=ty2+int(random(-15, 15));
+      int r=int(random(0, 255));
+      int g=int(random(0, 100));
+      fill(r, g, 0);
+      triangle(tx, ty, tx2, ty2, tx3, ty3);
+      boom_loop++;
+    }
+  }
+}
+
+
+void message_show(String message) {
+  pause_game_bool=false;
+  background(0);
+  fill(255);
+  text(message, width/2-textWidth(message)/2, height/2);
+}
+void score_show(int score) {
+  fill(0, 0, 0, 60);
+  rect(width-200, 0, width, height/8);
+  fill(255, 255, 0);
+  String score_str="Score: "+score;
+  text(score_str, width-textWidth(score_str)-(200-textWidth(score_str))/2, 40);
+}
+
+void time_show() {
+  fill(0, 0, 0, 60);
+  rect(0, 0, 200, height/8);
+  fill(255, 255, 0);
+  int seconds=second()-start_time_seconds;
+  if (seconds<0) seconds+=60;
+  int minutes=minute()-start_time_minutes;
+  if (minutes<0) minutes+=60;
+  String extra_zero_seconds=""; 
+  if (seconds<10) extra_zero_seconds="0";
+  String extra_zero_minutes=""; 
+  if (minutes<10) extra_zero_minutes="0";
+  String time_str="Time: "+extra_zero_minutes+minutes+":"+extra_zero_seconds+seconds;
+  text(time_str, 200-textWidth(time_str)-(200-textWidth(time_str))/2, 40);
+}
